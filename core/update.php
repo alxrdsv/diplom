@@ -84,6 +84,8 @@ function handle_get()
     $sql = "UPDATE precinct SET $sql_values WHERE id='$id'";
     $result = $mysqli->query($sql);
 
+    send_data("Адрес: " . $geocode);
+
     if (!$result) {
         send_data("Произошла ошибка: " . $mysqli->error . "\n" . "Запрос: $sql", 500);
         return;
