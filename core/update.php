@@ -9,7 +9,7 @@
 
     switch ($_SERVER["REQUEST_METHOD"]) {
         case "POST": {
-                if (check_request(array("id", "name", "town", "street", "house"))) handle_get();
+                if (check_request(array("id"))) handle_get();
                 break;
             }
         default: {

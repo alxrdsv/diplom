@@ -90,7 +90,7 @@
 			</div>
 			<div class="upd">
 				<h3>Редактирование записи</h3>
-				<form action="/diplom/core/update.php" method="POST" class="updform">
+				<form action="/diplom/core/update.php" onsubmit="return onFormSubmit(this)" method="POST" class="updform">
 					<p>
 						<label for="id">Выберите № участка:</label>
 						<input type="number" id="id" name="id" required>
