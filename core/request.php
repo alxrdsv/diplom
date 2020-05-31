@@ -14,7 +14,7 @@ function check_request(array $required)
     return true;
 }
 
-function send_data(string $body, int $code = 200)
+function send_data($body, int $code = 200)
 {
     http_response_code($code);
     if (!$body) return;
