@@ -45,7 +45,7 @@
     $house  = $_POST['house'];
     $points = $response_data["response"]["GeoObjectCollection"]["featureMember"];
 
-    if(count($points) === 0) { echo "<script>alert('Адрес отсутствует!')</script>"; return; }
+    if(count($points) === 0) { echo "<script>alert('Адрес отсутствует!')</script>"; }
 
     $point = explode(" ", $points[0]["GeoObject"]["Point"]["pos"]);
 
@@ -67,6 +67,7 @@
     $sql_values = implode(", ", $values);
 
     $sql = "UPDATE precinct SET $sql_values WHERE id='$id'";
+    echo 'Запрос: ' . $sql;
     $result = $mysqli->query($sql);
 
     if(!$result) {
