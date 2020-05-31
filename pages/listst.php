@@ -208,7 +208,7 @@
 	<script>
 			$("td").click(function() {
 				
-				$(this).priner_id.innerHTML ="НОВЫЙ ТЕКСТ";
+				$(this).toggleClass("colored");
 			  });
 	</script>
 	<script>new Tablesort(document.getElementById('tablest'));</script>

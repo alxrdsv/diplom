@@ -7,6 +7,17 @@
 
     header("Content-Type: application/json");
 
+    switch ($_SERVER["REQUEST_METHOD"]) {
+        case "POST": {
+                if (check_request(array("id", "name", "town", "street", "house"))) handle_get();
+                break;
+            }
+        default: {
+                send_data("Метод не найден.", 404);
+                break;
+            }
+    }
+
     function handle_get() {
         $geocode = "г. " . $_REQUEST["town"] . ", ул. " . $_REQUEST["street"] . ", д." . $_REQUEST["house"];
         $query = http_build_query(array(
