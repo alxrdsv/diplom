@@ -1,17 +1,18 @@
 <?php
 
-	$host = 'localhost';  
-	$user = 'root';  
-	$pass = '123'; 
-	$db_name = 'bd';   
-	$link = mysqli_connect($host, $user, $pass, $db_name); 
+$host = 'localhost';
+$user = 'root';
+$pass = '123';
+$db_name = 'bd';
+$mysqli = new mysqli($host, $user, $pass, $db_name);
 
 ?>
 
-	
 
-	<script>//поиск по таблице
-		function tableSearch() {
+
+<script>
+	//поиск по таблице
+	function tableSearch() {
 		var phrase = document.getElementById('search-st');
 		var table = document.getElementById('tablest');
 		var regPhrase = new RegExp(phrase.value, 'i');
@@ -30,47 +31,56 @@
 
 		}
 	}
-	</script>
+</script>
 
-	<script type="text/javascript">//скрипт выгрузки таблицы в виде excel
-		
-		var tableToExcel = (function() {
-			var uri = 'data:application/vnd.ms-excel;base64,',
-			template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-			, base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-			, format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-			return function(table, name) {
-				if (!table.nodeType) table = document.getElementById(table)
-				var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-				window.location.href = uri + base64(format(template, ctx))
+<script type="text/javascript">
+	//скрипт выгрузки таблицы в виде excel
+
+	var tableToExcel = (function() {
+		var uri = 'data:application/vnd.ms-excel;base64,',
+			template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+			base64 = function(s) {
+				return window.btoa(unescape(encodeURIComponent(s)))
+			},
+			format = function(s, c) {
+				return s.replace(/{(\w+)}/g, function(m, p) {
+					return c[p];
+				})
 			}
-		})()
-	</script>
+		return function(table, name) {
+			if (!table.nodeType) table = document.getElementById(table)
+			var ctx = {
+				worksheet: name || 'Worksheet',
+				table: table.innerHTML
+			}
+			window.location.href = uri + base64(format(template, ctx))
+		}
+	})()
+</script>
 
-	<div class="com-panel">
-		
-		<div class="dep">
-			<div style="margin-right: 10px">
-				<a href="#" onclick="tableToExcel('tablest', 'W3C Example Table')" class="download">Скачать таблицу</a>
-				<input class="form-search" type="text" placeholder="Поиск по таблице" id="search-st" onkeyup="tableSearch()">
-			</div>	
+<div class="com-panel">
+
+	<div class="dep">
+		<div style="margin-right: 10px">
+			<a href="#" onclick="tableToExcel('tablest', 'W3C Example Table')" class="download">Скачать таблицу</a>
+			<input class="form-search" type="text" placeholder="Поиск по таблице" id="search-st" onkeyup="tableSearch()">
 		</div>
-		
-		<div class="panel-filter">
-			<form action="/diplom/core/filter.php" method="POST">
+	</div>
+
+	<div class="panel-filter">
+		<form action="/diplom/core/filter.php" method="POST">
 			<div class="par">
 				<label>Филиал: </label>
 				<select name="par-select1" class="par-sel1">
 					<option value="" selected></option>
 					<?php
-					$query1 ="SELECT name FROM `branch`";
-					$result1 = mysqli_query($link, $query1) or die("Ошибка " . mysqli_error($link));
-					while ($branch = mysqli_fetch_array($result1, MYSQLI_ASSOC))
-					{ 
-						echo "<option value='" . $branch['name'] . "'>".$branch['name']."</option>";
+					$query1 = "SELECT name FROM `branch`";
+					$result1 = $mysqli->query($query1) or die("Ошибка " . mysqli_error($link));
+					while ($branch = $result1->fetch_assoc()) {
+						echo "<option value='" . $branch['name'] . "'>" . $branch['name'] . "</option>";
 					}
 
-				?>
+					?>
 				</select>
 			</div>
 
@@ -79,82 +89,76 @@
 				<select name="par-select2" class="par-sel2">
 					<option value="" selected></option>
 					<?php
-					$query2 ="SELECT name FROM `course`";
-					$result2 = mysqli_query($link, $query2) or die("Ошибка " . mysqli_error($link));
-					while ($course = mysqli_fetch_array($result2, MYSQLI_ASSOC))
-					{ 
-						echo "<option value='" . $course['name'] . "'>".$course['name']."</option>";
+					$query2 = "SELECT name FROM `course`";
+					$result2 = $mysqli->query($query2) or die("Ошибка " . mysqli_error($link));
+					while ($course = $result2->fetch_assoc()) {
+						echo "<option value='" . $course['name'] . "'>" . $course['name'] . "</option>";
 					}
-				?>
+					?>
 				</select>
 			</div>
-			
+
 
 			<div class="par">
 				<label>Отделение: </label>
 				<select name="par-select3" class="par-sel3">
 					<option value="" selected></option>
 					<?php
-					$query3 ="SELECT name FROM `department`";
-					$result3 = mysqli_query($link, $query3) or die("Ошибка " . mysqli_error($link));
-					while ($dep = mysqli_fetch_array($result3, MYSQLI_ASSOC)) 
-					
-					{ 
-						echo "<option value='" . $dep['name'] . "'>".$dep['name']."</option>";
+					$query3 = "SELECT name FROM `department`";
+					$result3 = $mysqli->query($query3) or die("Ошибка " . mysqli_error($link));
+					while ($dep = $result3->fetch_assoc()) {
+						echo "<option value='" . $dep['name'] . "'>" . $dep['name'] . "</option>";
 					}
 
-				?>
+					?>
 				</select>
 			</div>
-			
+
 			<div class="par">
 				<label>Специальность: </label>
 				<select name="par-select4" class="par-sel4">
 					<option value="" selected></option>
 					<?php
-					$query4 ="SELECT name FROM `profession`";
-					$result4 = mysqli_query($link, $query4) or die("Ошибка " . mysqli_error($link));
-					while ($prof = mysqli_fetch_array($result4, MYSQLI_ASSOC)) 
-					
-					{ 
-						echo "<option value='" . $prof['name'] . "'>".$prof['name']."</option>";
+					$query4 = "SELECT name FROM `profession`";
+					$result4 = $mysqli->query($query4) or die("Ошибка " . mysqli_error($link));
+					while ($prof = $result4->fetch_assoc()) {
+						echo "<option value='" . $prof['name'] . "'>" . $prof['name'] . "</option>";
 					}
 
-				?>
+					?>
 				</select>
 			</div>
-			
-			
+
+
 			<div class="par">
 				<label>Форма обучения: </label>
 				<select name="par-select5" class="par-sel5">
-				<option value="" selected></option>
-				<?php
-					$query5 ="SELECT name FROM `formtr`";
-					$result5 = mysqli_query($link, $query5) or die("Ошибка " . mysqli_error($link));
-					while ($ftr = mysqli_fetch_array($result5, MYSQLI_ASSOC))
-					{ 
-						echo "<option value='" . $ftr['name'] . "'>".$ftr['name']."</option>";
+					<option value="" selected></option>
+					<?php
+					$query5 = "SELECT name FROM `formtr`";
+					$result5 = $mysqli->query($query5) or die("Ошибка " . mysqli_error($link));
+					while ($ftr = $result5->fetch_assoc()) {
+						echo "<option value='" . $ftr['name'] . "'>" . $ftr['name'] . "</option>";
 					}
-				?>
+					?>
 				</select>
 			</div>
 
-			<div class="checkpan">		
-				<input type="checkbox" name="age" value="Yes"/>
+			<div class="checkpan">
+				<input type="checkbox" name="age" value="Yes" />
 				<label>Совершеннолетние</label></br>
-				<input type="checkbox" name="bool" value="Yes"/>
+				<input type="checkbox" name="bool" value="Yes" />
 				<label>Идут на выборы</label>
 			</div>
 			<div class="filter-sub">
-				<input class="filter-apply apply" type="submit" name="apply" value="Применить"/>	
+				<input class="filter-apply apply" type="submit" name="apply" value="Применить" />
 			</div>
-				</form>
-		</div>	
-	</div>	
+		</form>
+	</div>
+</div>
 
 <div class="conttabst">
-	<table class="tablest" id="tablest">	
+	<table class="tablest" id="tablest">
 		<thead class="thead">
 			<tr>
 				<th style="width: 7%">Фамилия</th>
@@ -176,40 +180,71 @@
 
 		<tbody>
 			<?php
-			$sql = mysqli_query($link, 'SELECT fname, student.name as name, lname, DATE_FORMAT(birth,"%d.%m.%Y") as birth, team.name as id_team, town,
+			function create_dropdown($column_key, $table)
+			{
+				global $mysqli;
+			}
+
+			$sql = $mysqli->query('SELECT id_stud, fname, student.name as name, lname, DATE_FORMAT(birth,"%d.%m.%Y") as birth, team.name as id_team, town,
 			formtr.name as id_ftr, branch.name as id_branch, department.name as id_dep, profession.name as id_prof, id_course, 
 			concat("+7 (", substring(phone, 1, 3), ") ", substring(phone, -7, 3), "-", substring(phone, -4, 2), "-", substring(phone, -2, 2)) as phone,
-			id_prec 
+			id_prec as id_precinct, bool
 			FROM team, formtr, branch, department, profession, student 
 			WHERE team.id_team = student.id_team AND formtr.id_ftr = student.id_ftr 
 			AND branch.id_branch = student.id_branch AND department.id_dep = student.id_dep 
 			AND profession.id_prof = student.id_prof');
-			while ($result = mysqli_fetch_array($sql)) {
-				echo "
-			<tr>
-			<td>{$result['fname']}</td>
-			<td>{$result['name']}</td>
-			<td>{$result['lname']}</td>
-			<td>{$result['birth']}</td>
-			<td>{$result['id_team']}</td>
-			<td>{$result['town']}</td>
-			<td>{$result['id_ftr']}</td>
-			<td>{$result['id_branch']}</td>
-			<td>{$result['id_dep']}</td>
-			<td>{$result['id_prof']}</td>
-			<td>{$result['id_course']}</td>
-			<td>{$result['phone']}</td>
-			<td>{$result['id_prec']}</td>
-			<td></td>
-			</tr>";}
+			// Последний столбец не заполнятся, это норма?
+			while ($result = $sql->fetch_assoc()) {
+				$id_stud = $result["id_stud"];
+				echo "<tr>";
+				foreach ($result as $key => $key_value) {
+					$result_value = $key_value;
+					// Если это не первичный ключ
+					if ($key === "id_stud") continue;
+					if ($key === "id_precinct") {
+						$result_value = $result[$key];
+						$fkeys = $mysqli->query("SELECT id, name FROM precinct");
+						if ($fkeys) {
+							$results = array();
+							$result_value = "<select onchange='updateStudentStatus($id_stud, this.value)'><option value='null' selected> не выбрано </option>";
+							// $value = "<select onchange='console.log(this.value, $id_stud)' name='$id_stud'>";
+							while ($row = $fkeys->fetch_assoc()) {
+								$id = $row["id"];
+								// Если столбец имя присутствует, то он выводится в качестве текстовго читаемого значения, иначе id
+								$name = $row["name"] ?? $id;
+								$selected = $id === $key_value ? "selected" : "";
+								$result_value .= "<option $selected value='$id'>$name</option>";
+							}
+							$result_value .= "</select>";
+						}
+					}
+					echo "<td>" . $result_value . "</td>";
+				}
+			}
+			echo "</tr>";
+			// <td>{$result['fname']}</td>
+			// <td>{$result['name']}</td>
+			// <td>{$result['lname']}</td>
+			// <td>{$result['birth']}</td>
+			// <td>{$result['id_team']}</td> мы можем сделать так, чтобы все ключи начинающиеся с id_ были с дропбоксами, чтобы ручками не делать для каждого давай
+			// <td>{$result['town']}</td>
+			// <td>{$result['id_ftr']}</td>
+			// <td>{$result['id_branch']}</td>
+			// <td>{$result['id_dep']}</td>
+			// <td>{$result['id_prof']}</td>
+			// <td>{$result['id_course']}</td>
+			// <td>{$result['phone']}</td>
+			// <td>{$result['id_prec']}</td>
+			// <td></td>
+
+
+
 			?>
 		</tbody>
 	</table>
 	<script>
-			$("td").click(function() {
-				
-				$(this).toggleClass("colored");
-			  });
 	</script>
-	<script>new Tablesort(document.getElementById('tablest'));</script>
+	<script>
+		new Tablesort(document.getElementById('tablest'));
+	</script>
 </div>

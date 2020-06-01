@@ -26,3 +26,12 @@ function send_data($body, int $code = 200)
 
     echo $response;
 }
+
+// Фильтрует данные удаляя пустые строки и пустые значения
+function parse_request($request) {
+    $result = array();
+    foreach($request as $key => $value) {
+        if(isset($value) && !empty($value)) $result[$key] = $value;
+    }
+    return $result;
+}

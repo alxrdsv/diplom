@@ -8,8 +8,6 @@
 
 ?>
 
-	
-
 	<script>//поиск по таблице
 		function tableSearch() {
 		var phrase = document.getElementById('search-pr');

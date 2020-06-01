@@ -32,9 +32,11 @@ function handle_get()
 
     $current_data = $current_data_response->fetch_assoc();
 
-    $town =  $_REQUEST["town"] ?? $current_data["town"];
-    $street = $_REQUEST["street"] ?? $current_data["street"];
-    $house = $_REQUEST["house"] ?? $current_data["house"];
+    $request = parse_request($_REQUEST);
+
+    $town = $request["town"]  ?? $current_data["town"];
+    $street = $request["street"] ?? $current_data["street"];
+    $house = $request["house"] ?? $current_data["house"];
 
     $geocode = "г. $town, ул. $street,  д. $house";
     $query = http_build_query(array(
