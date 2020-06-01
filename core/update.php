@@ -53,8 +53,8 @@ function handle_get()
     // закрываем соединение
     curl_close($curl);
 
+    
     $response_data = json_decode($response, true);
-
     $points = $response_data["response"]["GeoObjectCollection"]["featureMember"];
 
     if (count($points) === 0) {
@@ -69,12 +69,8 @@ function handle_get()
     $lon = $point[0];
     $lat = $point[1];
 
-    // Присваиваем переменной $reques_data данные запроса
-    $request_data = $_REQUEST;
-
-    // Добавляем в данные запроа координаты (т.к. мы их в коде вытаскиваем, а не приходят от юзера)
-    $request_data["lon"] = $lon;
-    $request_data["lat"] = $lat;
+    // Присваиваем переменной $reques_data данные, отправляемые в бд
+    $request_data = array("town" => $town, "street" => $street, "house" => $house, "lon" => $lon, "lat" => $lat);
 
     $values = array();
 
