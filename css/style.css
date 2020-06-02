@@ -283,6 +283,12 @@ a {
 
 /* Map 
 //////////////////////////////////////////////////////////////////////////*/
+.map-submenu__item {
+	margin: 0.5rem 0;
+	text-align: center;
+  }
+  
+
 
 #map {
 	height: calc(100vh - 122px);
@@ -437,7 +443,7 @@ th {
 }
 
 td:last-child {
-	text-align: left;
+	text-align: center;
 }
 
 
@@ -649,13 +655,10 @@ td:last-child {
     background-color: c1e0e3;
 
 }
-/*
-.thead_fixed {
-	position: fixed;
-	top: 0;
-	left: 0;
 
-}*/
+.tablest select {
+	width: 100px;
+}
 
 
 /* Filter Panel listst

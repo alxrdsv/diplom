@@ -49,18 +49,7 @@ function createSubMenu(map, places, placemarks, submenu) {
       });
   }
 
-  // submenuItem
-  //   .appendTo(submenu)
-  //   // При клике по пункту подменю открываем/закрываем баллун у метки.
-  //   .find("a")
-  //   .bind("click", function () {
-  //     if (!placemark.balloon.isOpen()) {
-  //       placemark.balloon.open();
-  //     } else {
-  //       placemark.balloon.close();
-  //     }
-  //     return false;
-  //   });
+
 }
 
 function mapPage(placemarks) {
@@ -83,8 +72,6 @@ function mapPage(placemarks) {
           // Этот элемент будет служить контейнером для элементов списка.
           // В зависимости от того, свернут или развернут список, этот контейнер будет
           // скрываться или показываться вместе с дочерними элементами.
-
-          // А это где-то выводится?
           "<ul id='my-listbox'" +
           " class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'" +
           " style='display: {% if state.expanded %}block{% else %}none{% endif %};'></ul>",
@@ -129,7 +116,6 @@ function mapPage(placemarks) {
       ListBoxItemLayout = ymaps.templateLayoutFactory.createClass(
         "<li><a>{{data.content}}</a></li>"
       ),
-      // А это? Как это выглядит на карте ок
       // Создадим пункты выпадающего списка
       listBoxItems = [
         new ymaps.control.ListBoxItem({
@@ -278,17 +264,16 @@ function mapPage(placemarks) {
   }
 }
 
-function updateStudentStatus(studentId, precinctId) {
-  fetch(
-    `/diplom/core/updatePrecinct.php?id_stud=${studentId}&id_precinct=${precinctId}`,
-    { method: "PUT" }
-  )
+function updateStudentStatus(studentId, values) {
+  console.log("input: ", values);
+  const query = Object.keys(values)
+    .map((v) => `${v}=${values[v]}`)
+    .join("&");
+  console.log("query: ", query);
+  fetch(`/diplom/core/updatePrecinct.php?id_stud=${studentId}&${query}`, { method: "PUT" })
     .then((res) => console.log("Данные обновлены"))
     .catch((err) => console.error("Произошла ошибка при обновлении: ", err));
 }
-//стоп, у меня вопрос, таблица которая выводилась до этого изменяться должна тольое в 2 помледних столбцах, а другие значения ждолжны оставаться таками же, а вот в предпоследенем нужн инпут
-// так погоди, тебе нужны дропбоксы  или что?
-//смотри вот здесь долен по клику появляться селект со всеми изб участками, я выбираю, и данны в бд обносвляются т, и там появляется этот номер понял ок ты не говорила лишь об этих двух
 
 function test() {
   alert("ok");

@@ -33,7 +33,7 @@ if (isset($_GET['goto'])) {
 
 <head>
 </head>
-	<title>Диплом</title> 
+	<title>Портал РСИ</title> 
 	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="/diplom/css/style.css">
 <body>
@@ -53,8 +53,6 @@ if (isset($_GET['goto'])) {
 
 						
 						</div>
-					</div>
-					
+					</div>		
 </body>					
-
 </html>

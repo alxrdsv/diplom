@@ -9,7 +9,7 @@ header("Content-Type: application/json");
 
 switch ($_SERVER["REQUEST_METHOD"]) {
     case "PUT": {
-            if (check_request(array("id_stud", "id_precinct"))) handle_put();
+            if (check_request(array("id_stud"))) handle_put();
             break;
         }
     default: {
@@ -21,12 +21,22 @@ switch ($_SERVER["REQUEST_METHOD"]) {
 function handle_put()
 {
     $id_stud = $_REQUEST["id_stud"];
-    $id_precinct = $_REQUEST["id_precinct"];
-    $id_precinct = $id_precinct === "null" ? $id_precinct : "'$id_precinct'";
+    $id_prec = $_REQUEST["id_prec"];
+    $bool = $_REQUEST["bool"];
+
+    if (!isset($bool) && !isset($id_prec)) return send_data("Не задан обязательный параметр", 400);
+
+    if (isset($bool)) $bool = $bool === "true" ? 1 : 0;
+    if (isset($id_prec))
+        $id_prec = $id_prec === "null" ? $id_prec : "'$id_prec'";
 
     $mysqli = new mysqli("localhost", "root", "123", "bd");
+    $values = "";
+    if (isset($id_prec)) $values .= " id_prec=$id_prec ";
+    if (isset($bool)) $values .= " `bool`='$bool' ";
 
-    $result = $mysqli->query("UPDATE student SET id_prec=$id_precinct WHERE id_stud='$id_stud'");
+
+    $result = $mysqli->query("UPDATE student SET $values WHERE id_stud='$id_stud'");
     if (!$result) send_data("Произошла ошибка: " . $mysqli->error, 500);
 
 

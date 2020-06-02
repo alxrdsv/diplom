@@ -115,7 +115,7 @@
 		
 			<div class="delete">
 				<h3>Удаление записи</h3>
-				<form action="/diplom/core/delete.php" method="POST">
+				<form action="/diplom/core/delete.php" onsubmit="return onFormSubmit(this)" method="POST">
 					Удалить участок под №
 					<input type="text" id="id" name="id" size="6">
 					<input type="submit" value="OK">

@@ -3,7 +3,7 @@
 <html>
 
     <head>
-        <title>Диплом</title> 
+        <title>Портал РСИ</title> 
 		
         <link rel="stylesheet" type="text/css" href="/diplom/css/style.css">
     
@@ -83,7 +83,7 @@
 	
 	<script type="text/javascript">
 
-		function setVisibility(id){
+		function setVisibility(id) {
 			display = document.getElementById(id).style.display;
 			if(display=='none'){
 			document.getElementById(id).style.display='block';
@@ -92,10 +92,6 @@
 			}
 		}
 	</script>
-
-
-
-
 
 	<div id="pre">
 		<form onsubmit="return onFormSubmit(this)" action="/diplom/core/insert.php" method="POST" class="form">

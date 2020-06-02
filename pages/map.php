@@ -1,6 +1,5 @@
 <script src="https://api-maps.yandex.ru/2.1/?apikey=84314dca-6af9-430d-b2e5-1faac3126fa8&lang=ru_RU" type="text/javascript"></script>
 <script src="main.js"></script>
-<link href="styles.css" rel="stylesheet">
 
 <?php
 $mysqli = new mysqli("localhost", "root", "123", "bd");

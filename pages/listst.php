@@ -1,14 +1,10 @@
 <?php
-
 $host = 'localhost';
 $user = 'root';
 $pass = '123';
 $db_name = 'bd';
 $mysqli = new mysqli($host, $user, $pass, $db_name);
-
 ?>
-
-
 
 <script>
 	//поиск по таблице
@@ -68,10 +64,10 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 	</div>
 
 	<div class="panel-filter">
-		<form action="/diplom/core/filter.php" method="POST">
+		<form method="POST">
 			<div class="par">
 				<label>Филиал: </label>
-				<select name="par-select1" class="par-sel1">
+				<select name="branch" class="par-sel1">
 					<option value="" selected></option>
 					<?php
 					$query1 = "SELECT name FROM `branch`";
@@ -86,7 +82,7 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 
 			<div class="par">
 				<label>Курс: </label>
-				<select name="par-select2" class="par-sel2">
+				<select name="course" class="par-sel2">
 					<option value="" selected></option>
 					<?php
 					$query2 = "SELECT name FROM `course`";
@@ -101,7 +97,7 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 
 			<div class="par">
 				<label>Отделение: </label>
-				<select name="par-select3" class="par-sel3">
+				<select name="department" class="par-sel3">
 					<option value="" selected></option>
 					<?php
 					$query3 = "SELECT name FROM `department`";
@@ -116,7 +112,7 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 
 			<div class="par">
 				<label>Специальность: </label>
-				<select name="par-select4" class="par-sel4">
+				<select name="profession" class="par-sel4">
 					<option value="" selected></option>
 					<?php
 					$query4 = "SELECT name FROM `profession`";
@@ -132,7 +128,7 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 
 			<div class="par">
 				<label>Форма обучения: </label>
-				<select name="par-select5" class="par-sel5">
+				<select name="formtr" class="par-sel5">
 					<option value="" selected></option>
 					<?php
 					$query5 = "SELECT name FROM `formtr`";
@@ -145,9 +141,9 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 			</div>
 
 			<div class="checkpan">
-				<input type="checkbox" name="age" value="Yes" />
+				<input type="checkbox" name="age" value="1" />
 				<label>Совершеннолетние</label></br>
-				<input type="checkbox" name="bool" value="Yes" />
+				<input type="checkbox" name="bool" value="1" />
 				<label>Идут на выборы</label>
 			</div>
 			<div class="filter-sub">
@@ -156,6 +152,53 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 		</form>
 	</div>
 </div>
+
+	<?php
+		$search_filters = array();
+		foreach($_GET as $key => $value) {
+			if($value === "") continue;
+			switch($key) {
+			case "branch":
+			array_push($search_filters, "id_branch ='$value'");
+			break;
+			
+			case "course":
+			array_push($search_filters, "id_course = '$value'");
+			break;
+
+			case "department":
+			array_push($search_filters, "id_dep = '$value'");
+			break;
+			
+			case "profession":
+			array_push($search_filters, "id_prof='$value'");
+			break;
+			
+			case "formtr":
+			array_push($search_filters, "id_ftr='$value'");
+			break;
+			
+			case "age":
+			array_push($search_filters, "((YEAR(CURRENT_DATE) - YEAR(birth)) - (DATE_FORMAT(CURRENT_DATE,'%m%d') < DATE_FORMAT(birth, '%m%d')) ) > 18");
+			break;
+			
+			case "bool":
+			array_push($search_filters, "bool = '1'");
+			break;
+			}
+		}
+
+		$filter_query = count($search_filters) > 0 ? "AND " . implode(" AND ", $search_filters) : "";
+		$query = "SELECT fname, student.name as name, lname, DATE_FORMAT(birth,'%d.%m.%Y') as birth, team.name as id_team, town,
+		formtr.name as id_ftr, branch.name as id_branch, department.name as id_dep, profession.name as id_prof, id_course, 
+		concat('+7 (', substring(phone, 1, 3), ') ', substring(phone, -7, 3), '-', substring(phone, -4, 2), '-', substring(phone, -2, 2)) as phone,
+		id_prec as id_precinct, bool
+		FROM team, formtr, branch, department, profession, student 
+		WHERE team.id_team = student.id_team AND formtr.id_ftr = student.id_ftr 
+		AND branch.id_branch = student.id_branch AND department.id_dep = student.id_dep 
+		AND profession.id_prof = student.id_prof {$filter_query}";
+		$result = $mysqli->query($query);
+	?>
 
 <div class="conttabst">
 	<table class="tablest" id="tablest">
@@ -193,7 +236,7 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 			WHERE team.id_team = student.id_team AND formtr.id_ftr = student.id_ftr 
 			AND branch.id_branch = student.id_branch AND department.id_dep = student.id_dep 
 			AND profession.id_prof = student.id_prof');
-			// Последний столбец не заполнятся, это норма?
+
 			while ($result = $sql->fetch_assoc()) {
 				$id_stud = $result["id_stud"];
 				echo "<tr>";
@@ -203,47 +246,33 @@ $mysqli = new mysqli($host, $user, $pass, $db_name);
 					if ($key === "id_stud") continue;
 					if ($key === "id_precinct") {
 						$result_value = $result[$key];
-						$fkeys = $mysqli->query("SELECT id, name FROM precinct");
+						$fkeys = $mysqli->query("SELECT id, town as name FROM precinct");
 						if ($fkeys) {
 							$results = array();
-							$result_value = "<select onchange='updateStudentStatus($id_stud, this.value)'><option value='null' selected> не выбрано </option>";
+							$result_value = "<select onchange='updateStudentStatus($id_stud, { id_prec: this.value })'><option value='null' selected>  </option>";
 							// $value = "<select onchange='console.log(this.value, $id_stud)' name='$id_stud'>";
 							while ($row = $fkeys->fetch_assoc()) {
 								$id = $row["id"];
 								// Если столбец имя присутствует, то он выводится в качестве текстовго читаемого значения, иначе id
 								$name = $row["name"] ?? $id;
 								$selected = $id === $key_value ? "selected" : "";
-								$result_value .= "<option $selected value='$id'>$name</option>";
+								$result_value .= "<option $selected  value='$id'>$id ($name)</option>";
 							}
 							$result_value .= "</select>";
 						}
 					}
-					echo "<td>" . $result_value . "</td>";
+					if ($key === "bool") {
+						$v = $key_value ? "checked" : "";
+						echo "<td> <input $v  type='checkbox' onchange='updateStudentStatus($id_stud, { bool: this.checked })' > </td>";
+					} else {
+						echo "<td> $result_value </td>";
+					}
 				}
 			}
 			echo "</tr>";
-			// <td>{$result['fname']}</td>
-			// <td>{$result['name']}</td>
-			// <td>{$result['lname']}</td>
-			// <td>{$result['birth']}</td>
-			// <td>{$result['id_team']}</td> мы можем сделать так, чтобы все ключи начинающиеся с id_ были с дропбоксами, чтобы ручками не делать для каждого давай
-			// <td>{$result['town']}</td>
-			// <td>{$result['id_ftr']}</td>
-			// <td>{$result['id_branch']}</td>
-			// <td>{$result['id_dep']}</td>
-			// <td>{$result['id_prof']}</td>
-			// <td>{$result['id_course']}</td>
-			// <td>{$result['phone']}</td>
-			// <td>{$result['id_prec']}</td>
-			// <td></td>
-
-
-
 			?>
 		</tbody>
 	</table>
-	<script>
-	</script>
 	<script>
 		new Tablesort(document.getElementById('tablest'));
 	</script>

@@ -6,14 +6,11 @@
 
     $mysqli = new mysqli("localhost", "root", "123", "bd");
 
-
-    // поля в запросе должны соответствовать именам столбцов в бд
-
     $id = $_POST['id'];
 
 
     if(!isset($id)){
-        echo "Вы не задали номер участка!";
+        echo "<script>alert('Вы не задали номер участка!')</script>";
         return;
     }
 
@@ -25,6 +22,5 @@
         return;
     }
 
-
-    header("Location: /diplom/listpr")
+  header("Location: /diplom/listpr")
 ?>
